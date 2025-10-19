@@ -9,7 +9,6 @@ t-chatbot-backend/.idea/
 t-chatbot-backend/.gradle/
 t-chatbot-backend/build/
 t-chatbot-backend/target/
-t-chatbot-backend/src/main/resources/application.properties
 
 # ===== COMMON =====
 .vscode/
