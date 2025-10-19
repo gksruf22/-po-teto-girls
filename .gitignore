@@ -1,0 +1,18 @@
+# ===== FRONTEND =====
+t-chatbot-frontend/node_modules/
+t-chatbot-frontend/dist/
+t-chatbot-frontend/build/
+t-chatbot-frontend/.env
+
+# ===== BACKEND =====
+t-chatbot-backend/.idea/
+t-chatbot-backend/.gradle/
+t-chatbot-backend/build/
+t-chatbot-backend/target/
+t-chatbot-backend/src/main/resources/application.properties
+
+# ===== COMMON =====
+.vscode/
+.idea/
+.DS_Store
+*.log
