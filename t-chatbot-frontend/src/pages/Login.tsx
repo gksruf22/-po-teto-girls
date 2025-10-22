@@ -1,0 +1,143 @@
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+
+function Login() {
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      if (isSignUp) {
+        // 회원가입 API 호출
+        const response = await axios.post('http://localhost:8080/api/auth/signup', {
+          email,
+          password,
+          username,
+        });
+        
+        // 회원가입 성공 시 자동 로그인
+        login(response.data.token, response.data.username, response.data.email);
+        navigate('/');
+      } else {
+        // 로그인 API 호출
+        const response = await axios.post('http://localhost:8080/api/auth/login', {
+          email,
+          password,
+        });
+        
+        // 로그인 성공
+        login(response.data.token, response.data.username, response.data.email);
+        navigate('/');
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || '오류가 발생했습니다.');
+    }
+  };
+
+  return (
+    <div className="bg-[#1e1e1e] text-white min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        {/* Logo */}
+        <Link to="/" className="flex items-center justify-center gap-3 mb-8 hover:opacity-80 transition-opacity">
+          <span className="text-3xl font-medium text-white">T-Talk</span>
+        </Link>
+
+        {/* Login/SignUp Card */}
+        <div className="bg-[#282828] rounded-2xl p-8 shadow-xl border border-[#3c4043]">
+          <h2 className="text-2xl font-normal text-center mb-6">
+            {isSignUp ? '계정 만들기' : 'T-Talk에 로그인'}
+          </h2>
+
+          {error && (
+            <div className="bg-red-900/30 border border-red-700 text-red-200 px-4 py-3 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div>
+                <label className="block text-sm text-gray-300 mb-2">
+                  사용자명
+                </label>
+                <input
+                  type="text"
+                  className="w-full bg-[#3c4043] border border-[#5f6368] rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-all text-white"
+                  placeholder="닉네임을 입력하세요"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm text-gray-300 mb-2">
+                이메일
+              </label>
+              <input
+                type="email"
+                className="w-full bg-[#3c4043] border border-[#5f6368] rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-all text-white"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-300 mb-2">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                className="w-full bg-[#3c4043] border border-[#5f6368] rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-all text-white"
+                placeholder="비밀번호를 입력하세요"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-all mt-6"
+            >
+              {isSignUp ? '계정 만들기' : '로그인'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError('');
+              }}
+              className="text-blue-400 hover:text-blue-300 transition-colors text-sm"
+            >
+              {isSignUp ? '이미 계정이 있으신가요? 로그인' : '계정이 없으신가요? 회원가입'}
+            </button>
+          </div>
+
+          <div className="mt-4 text-center">
+            <Link to="/" className="text-gray-400 hover:text-gray-300 transition-colors text-sm">
+              홈으로 돌아가기
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Login;
