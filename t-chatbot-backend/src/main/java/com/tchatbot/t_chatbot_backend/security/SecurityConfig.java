@@ -22,10 +22,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.disable()))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/chat").permitAll()
+                .requestMatchers("/api/auth/**", "/api/chat", "/h2-console/**").permitAll()  // H2 콘솔 접근 허용
                 .anyRequest().authenticated()
             );
         
