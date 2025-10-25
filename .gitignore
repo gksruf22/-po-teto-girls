@@ -15,4 +15,4 @@ t-chatbot-backend/target/
 .idea/
 .DS_Store
 *.log
-arch.xml
+/arch.xml
