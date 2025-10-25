@@ -30,12 +30,16 @@ public class ChatService {
 
 
         try {
+            System.out.println("Gemini API 호출 시작...");
             GenerateContentResponse response = geminiClient.models
                     .generateContent("gemini-2.5-flash", systemPrompt, null);
 
-            return response.text();
+            String responseText = response.text();
+            System.out.println("Gemini API 응답 성공: " + responseText.substring(0, Math.min(50, responseText.length())));
+            return responseText;
         } catch (Exception e) {
             System.err.println("Gemini API 호출 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();  // 전체 스택 트레이스 출력
             return "AI 모델 응답 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.";
         }
     }

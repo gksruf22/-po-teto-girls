@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
-import { useAuth } from '../context/AuthContext';
 
 interface Message {
   id: number;
@@ -14,7 +13,6 @@ function Chat() {
   const location = useLocation();
   const navigate = useNavigate();
   const initialMessage = location.state?.initialMessage || '';
-  const { token, isLoggedIn } = useAuth();
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -42,12 +40,11 @@ function Chat() {
     setIsLoading(true);
 
     try {
-      // 헤더에 JWT 토큰 포함
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      
       const response = await axios.post('http://localhost:8080/api/chat', {
         message: messageText,
-      }, { headers });
+      }, {
+        withCredentials: true  // 세션 쿠키 전송
+      });
 
       const botMessage: Message = {
         id: Date.now() + 1,
@@ -56,14 +53,32 @@ function Chat() {
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("API 통신 중 오류 발생:", error);
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        text: "죄송합니다, 서버와 통신 중 오류가 발생했습니다.",
-        sender: 'bot',
-      };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      console.error("에러 상세:", error.response?.data);
+      console.error("에러 상태:", error.response?.status);
+      
+      // 인증 오류 확인
+      if (error.response?.status === 401) {
+        const errorMessage: Message = {
+          id: Date.now() + 1,
+          text: "로그인이 필요합니다. 로그인 페이지로 이동합니다.",
+          sender: 'bot',
+        };
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
+        
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      } else {
+        const errorDetail = error.response?.data?.message || error.message || "알 수 없는 오류";
+        const errorMessage: Message = {
+          id: Date.now() + 1,
+          text: `죄송합니다, 서버와 통신 중 오류가 발생했습니다.\n상세: ${errorDetail}`,
+          sender: 'bot',
+        };
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      }
     } finally {
       setIsLoading(false);
     }

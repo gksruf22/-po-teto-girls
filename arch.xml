@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" modified="2025-10-25T04:00:00Z" agent="5.0 (Mac)" version="23.0.8" editor="draw.io">
+  <diagram id="t_talk_architecture_v3" name="T-Talk Architecture (Session Version)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- User -->
+        <mxCell id="2" value="사용자 (Web Browser)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60A5FA;fontSize=16;fontColor=#ffffff;strokeColor=#1E40AF;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Frontend -->
+        <mxCell id="3" value="Frontend (React + Vite + TS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3B82F6;fontSize=16;fontColor=#ffffff;strokeColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="350" y="140" width="300" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Storage -->
+        <mxCell id="4" value="Session Storage (세션 쿠키 관리)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60A5FA;fontColor=#ffffff;strokeColor=#1E40AF;" vertex="1" parent="1">
+          <mxGeometry x="370" y="230" width="260" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Backend -->
+        <mxCell id="5" value="Backend (Spring Boot)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8B5CF6;fontColor=#ffffff;fontSize=16;strokeColor=#5B21B6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="310" width="360" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Layer -->
+        <mxCell id="6" value="Session Authentication Layer (세션 검증)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C084FC;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="390" y="420" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Controller Layer -->
+        <mxCell id="7" value="Controller Layer (요청 분배)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A78BFA;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="370" y="510" width="240" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Service Layer -->
+        <mxCell id="8" value="Service Layer (비즈니스 로직 처리)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A78BFA;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="370" y="600" width="240" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Database -->
+        <mxCell id="9" value="H2 Database (User, ChatHistory)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#34D399;fontSize=16;fontColor=#000000;strokeColor=#047857;" vertex="1" parent="1">
+          <mxGeometry x="120" y="700" width="220" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- External API -->
+        <mxCell id="10" value="Google Gemini API (AI 분석 요청)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CA3AF;fontSize=16;fontColor=#000000;strokeColor=#4B5563;" vertex="1" parent="1">
+          <mxGeometry x="640" y="700" width="240" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Lines -->
+        <mxCell id="11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E3A8A;endArrow=classic;html=1;" edge="1" source="2" target="3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#5B21B6;endArrow=classic;html=1;" edge="1" source="3" target="4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#5B21B6;endArrow=classic;html=1;" edge="1" source="4" target="6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#5B21B6;endArrow=classic;html=1;" edge="1" source="6" target="7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#5B21B6;endArrow=classic;html=1;" edge="1" source="7" target="8" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#047857;endArrow=classic;html=1;" edge="1" source="8" target="9" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4B5563;endArrow=classic;html=1;" edge="1" source="8" target="10" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

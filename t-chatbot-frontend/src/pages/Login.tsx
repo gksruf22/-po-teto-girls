@@ -23,20 +23,24 @@ function Login() {
           email,
           password,
           username,
+        }, {
+          withCredentials: true  // 쿠키 전송
         });
         
         // 회원가입 성공 시 자동 로그인
-        login(response.data.token, response.data.username, response.data.email);
+        login(response.data.username, response.data.email);
         navigate('/');
       } else {
         // 로그인 API 호출
         const response = await axios.post('http://localhost:8080/api/auth/login', {
           email,
           password,
+        }, {
+          withCredentials: true  // 쿠키 전송
         });
         
         // 로그인 성공
-        login(response.data.token, response.data.username, response.data.email);
+        login(response.data.username, response.data.email);
         navigate('/');
       }
     } catch (err: any) {

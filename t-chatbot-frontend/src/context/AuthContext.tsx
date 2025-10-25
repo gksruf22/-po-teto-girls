@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 interface AuthContextType {
   isLoggedIn: boolean;
   username: string | null;
   email: string | null;
-  token: string | null;
-  login: (token: string, username: string, email: string) => void;
+  login: (username: string, email: string) => void;
   logout: () => void;
+  checkSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,46 +16,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
 
-  // 컴포넌트 마운트 시 로컬 스토리지에서 인증 정보 불러오기
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUsername = localStorage.getItem('username');
-    const storedEmail = localStorage.getItem('email');
-
-    if (storedToken && storedUsername && storedEmail) {
-      setToken(storedToken);
-      setUsername(storedUsername);
-      setEmail(storedEmail);
-      setIsLoggedIn(true);
+  // 세션 확인 함수
+  const checkSession = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/auth/check', {
+        withCredentials: true  // 쿠키 전송
+      });
+      
+      if (response.status === 200) {
+        setUsername(response.data.username);
+        setEmail(response.data.email);
+        setIsLoggedIn(true);
+      }
+    } catch (error) {
+      // 세션이 없거나 만료됨
+      setUsername(null);
+      setEmail(null);
+      setIsLoggedIn(false);
     }
+  };
+
+  // 컴포넌트 마운트 시 세션 확인
+  useEffect(() => {
+    checkSession();
   }, []);
 
-  const login = (newToken: string, newUsername: string, newEmail: string) => {
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('username', newUsername);
-    localStorage.setItem('email', newEmail);
-    
-    setToken(newToken);
+  const login = (newUsername: string, newEmail: string) => {
     setUsername(newUsername);
     setEmail(newEmail);
     setIsLoggedIn(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('email');
+  const logout = async () => {
+    try {
+      await axios.post('http://localhost:8080/api/auth/logout', {}, {
+        withCredentials: true  // 쿠키 전송
+      });
+    } catch (error) {
+      console.error('로그아웃 요청 실패:', error);
+    }
     
-    setToken(null);
     setUsername(null);
     setEmail(null);
     setIsLoggedIn(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, username, email, token, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, username, email, login, logout, checkSession }}>
       {children}
     </AuthContext.Provider>
   );

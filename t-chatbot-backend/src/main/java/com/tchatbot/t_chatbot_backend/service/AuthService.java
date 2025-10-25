@@ -5,7 +5,6 @@ import com.tchatbot.t_chatbot_backend.dto.LoginRequest;
 import com.tchatbot.t_chatbot_backend.dto.SignUpRequest;
 import com.tchatbot.t_chatbot_backend.entity.User;
 import com.tchatbot.t_chatbot_backend.repository.UserRepository;
-import com.tchatbot.t_chatbot_backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,15 +15,12 @@ public class AuthService {
     
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
     
     @Autowired
     public AuthService(UserRepository userRepository, 
-                      PasswordEncoder passwordEncoder,
-                      JwtTokenProvider jwtTokenProvider) {
+                      PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
     
     @Transactional
@@ -42,10 +38,8 @@ public class AuthService {
         
         userRepository.save(user);
         
-        // JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(user.getEmail(), user.getUsername());
-        
-        return new AuthResponse(token, user.getUsername(), user.getEmail());
+        // 세션 기반이므로 토큰 대신 null 반환
+        return new AuthResponse(null, user.getUsername(), user.getEmail());
     }
     
     @Transactional(readOnly = true)
@@ -59,9 +53,7 @@ public class AuthService {
             throw new RuntimeException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
         
-        // JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(user.getEmail(), user.getUsername());
-        
-        return new AuthResponse(token, user.getUsername(), user.getEmail());
+        // 세션 기반이므로 토큰 대신 null 반환
+        return new AuthResponse(null, user.getUsername(), user.getEmail());
     }
 }
