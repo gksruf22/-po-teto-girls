@@ -35,7 +35,7 @@
 
 ## 🎯 프로젝트 소개
 
-**T-Talk**은 MBTI T 유형(사고형)을 위해 특별히 설계된 AI 챗봇입니다. 
+**T-Talk**은 MBTI T 유형(사고형)을 위한 AI 챗봇입니다. 
 
 ### 기획 배경
 
@@ -46,6 +46,8 @@ T-Talk은 다음과 같은 대화 스타일을 제공합니다:
 - ❌ "그랬구나, 힘들었겠다" → ✅ "그게 문제면 이렇게 해봐"
 - ❌ "많이 속상하셨겠어요" → ✅ "냉정하게 생각해보면 이건 네 잘못이 아니야"
 - ❌ "항상 응원할게요" → ✅ "시간 낭비 말고 당장 실행해"
+- ❌ "시험 망쳐서 속상하겠다" → ✅ "니가 열심히 공부했었어야지"
+
 
 ### 핵심 가치
 
@@ -68,11 +70,18 @@ T-Talk은 다음과 같은 대화 스타일을 제공합니다:
 ### 2. 🤖 AI 채팅
 - Google Gemini 2.5 Flash API 연동
 - T 유형 특화 프롬프트 엔지니어링
-- 디시인사이드 스타일 말투
-- 실시간 응답 (평균 1-2초)
-- 대화 히스토리 저장 (구현 예정)
+- 실시간 응답
+- 대화 히스토리 저장
+- 이전 대화 기억
 
-### 3. 🎨 사용자 경험
+### 3. 💬 커뮤니티 (공유 게시판)
+- 대화 내용 공유 기능
+- 최신순/인기순 필터링
+- 좋아요 토글 (한 사용자당 1회)
+- 댓글 시스템
+- 해시태그 지원
+
+### 4. 🎨 사용자 경험
 - Gemini 스타일 다크 테마 UI
 - 반응형 디자인 (모바일/태블릿/데스크톱)
 - 로딩 애니메이션
@@ -146,35 +155,45 @@ T-Talk은 다음과 같은 대화 스타일을 제공합니다:
 │                            │                                    │
 │  ┌─────────────────────────▼──────────────────────────────┐   │
 │  │                   REST Controllers                       │   │
-│  │  ┌──────────────────┬───────────────────────────────┐  │   │
-│  │  │ AuthController   │    ChatController             │  │   │
-│  │  │ • /api/auth/*    │    • /api/chat                │  │   │
-│  │  └────────┬─────────┴─────────┬─────────────────────┘  │   │
-│  └───────────│───────────────────│────────────────────────┘   │
-│              │                   │                             │
-│  ┌───────────▼─────────┬─────────▼─────────────┐              │
-│  │    AuthService      │    ChatService        │              │
-│  │  • User 인증/등록   │  • Gemini API 통신    │              │
-│  └─────────┬───────────┴──────────┬────────────┘              │
-│            │                      │                             │
-│  ┌─────────▼──────────┐  ┌────────▼────────────┐              │
-│  │  UserRepository    │  │  Gemini 2.5 Flash   │              │
-│  │  (Spring Data JPA) │  │  API Client         │              │
-│  └─────────┬──────────┘  └─────────────────────┘              │
-└────────────┼───────────────────────────────────────────────────┘
-             │
-             │ JPA/Hibernate (자동 DDL)
-             │
-┌────────────▼─────────────────────────────────────────────────┐
+│  │  ┌──────────────────┬──────────────────┬──────────────┐│   │
+│  │  │ AuthController   │  ChatController  │CommunityCtrl ││   │
+│  │  │ • /api/auth/*    │  • /api/chat     │• /api/comm/* ││   │
+│  │  └────────┬─────────┴─────────┬────────┴──────┬───────┘│   │
+│  └───────────│───────────────────│───────────────│────────┘   │
+│              │                   │               │             │
+│  ┌───────────▼─────────┬─────────▼──────┬────────▼────────┐   │
+│  │    AuthService      │  ChatService   │CommunityService │   │
+│  │  • User 인증/등록   │  • Gemini API  │• 게시글/댓글/좋아요│   │
+│  └─────────┬───────────┴──────────┬─────┴─────────┬───────┘   │
+│            │                      │               │            │
+│  ┌─────────▼──────────┐  ┌────────▼────────┐ ┌───▼──────┐    │
+│  │  UserRepository    │  │  Gemini 2.5     │ │SharedChat│    │
+│  │  (Spring Data JPA) │  │  Flash API      │ │Repository│    │
+│  │                    │  │  Client         │ │Comment   │    │
+│  │                    │  │                 │ │ChatLike  │    │
+│  └─────────┬──────────┘  └─────────────────┘ └────┬─────┘    │
+└────────────┼──────────────────────────────────────┼──────────┘
+             │                                      │
+             │ JPA/Hibernate (자동 DDL)             │
+             │                                      │
+┌────────────▼──────────────────────────────────────▼──────────┐
 │              H2 Database (file:./data/tchatbot)              │
-│  ┌──────────────────┬─────────────────────────────────────┐  │
-│  │  users           │  chat_history (구현 예정)           │  │
-│  │  • id (PK)       │  • id (PK)                         │  │
-│  │  • email         │  • user_id (FK)                    │  │
-│  │  • password      │  • user_message                    │  │
-│  │  • username      │  • bot_response                    │  │
-│  │  • created_at    │  • created_at                      │  │
-│  └──────────────────┴─────────────────────────────────────┘  │
+│  ┌──────────────┬────────────────┬──────────────┬──────────┐ │
+│  │  users       │  chat_history  │ shared_chats │ comments │ │
+│  │  • id (PK)   │  • id (PK)     │  • id (PK)   │• id (PK) │ │
+│  │  • email     │  • user_id (FK)│  • user_id   │• content │ │
+│  │  • password  │  • user_msg    │  • title     │• user_id │ │
+│  │  • username  │  • bot_resp    │  • tags      │          │ │
+│  │  • created_at│  • created_at  │  • likes     │          │ │
+│  │              │                │  • created_at│          │ │
+│  └──────────────┴────────────────┴──────────────┴──────────┘ │
+│  ┌──────────────────────────────────────────────────────────┐ │
+│  │  chat_likes (좋아요 중복 방지)                            │ │
+│  │  • id (PK)                                               │ │
+│  │  • shared_chat_id (FK)                                   │ │
+│  │  • user_id                                               │ │
+│  │  • UNIQUE(shared_chat_id, user_id)  ← 1인당 1좋아요     │ │
+│  └──────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -221,10 +240,10 @@ cd -po-teto-mans
 
 ### 2️⃣ 백엔드 실행
 
-#### VS Code에서 실행 (권장)
+#### VS Code에서 실행
 
 1. `t-chatbot-backend` 폴더를 VS Code로 열기
-2. `.vscode/launch.json` 파일에 이미 API 키가 설정되어 있음
+2. `.vscode/launch.json` 파일에서 API 키가 설정하기
 3. F5 키를 눌러 디버그 모드로 실행
 
 #### 터미널에서 실행
@@ -303,31 +322,50 @@ t-chatbot-backend/
 │   │   │   │   ├── POST /api/auth/logout     # 로그아웃
 │   │   │   │   └── GET  /api/auth/check      # 세션 체크
 │   │   │   │
-│   │   │   └── ChatController.java            # 채팅 API
-│   │   │       └── POST /api/chat             # 메시지 전송
+│   │   │   ├── ChatController.java            # 채팅 API
+│   │   │   │   └── POST /api/chat             # 메시지 전송
+│   │   │   │
+│   │   │   └── CommunityController.java       # 커뮤니티 API
+│   │   │       ├── POST /api/community/share  # 대화 공유
+│   │   │       ├── GET  /api/community        # 최신순 조회
+│   │   │       ├── GET  /api/community/popular # 인기순 조회
+│   │   │       ├── GET  /api/community/my     # 내 공유 조회
+│   │   │       ├── POST /api/community/{id}/like # 좋아요 토글
+│   │   │       ├── POST /api/community/{id}/comments # 댓글 작성
+│   │   │       ├── GET  /api/community/{id}/comments # 댓글 조회
+│   │   │       └── DELETE /api/community/comments/{id} # 댓글 삭제
 │   │   │
 │   │   ├── service/
 │   │   │   ├── AuthService.java               # 인증 비즈니스 로직
-│   │   │   └── ChatService.java               # Gemini API 통신
+│   │   │   ├── ChatService.java               # Gemini API 통신
+│   │   │   └── CommunityService.java          # 커뮤니티 로직
 │   │   │
 │   │   ├── entity/
 │   │   │   ├── User.java                      # 사용자 엔티티
-│   │   │   └── ChatHistory.java               # 채팅 히스토리 엔티티
+│   │   │   ├── ChatHistory.java               # 채팅 히스토리 엔티티
+│   │   │   ├── SharedChat.java                # 공유 게시글 엔티티
+│   │   │   ├── Comment.java                   # 댓글 엔티티
+│   │   │   └── ChatLike.java                  # 좋아요 엔티티
 │   │   │
 │   │   ├── repository/
 │   │   │   ├── UserRepository.java            # User DB 접근
-│   │   │   └── ChatHistoryRepository.java     # ChatHistory DB 접근
+│   │   │   ├── ChatHistoryRepository.java     # ChatHistory DB 접근
+│   │   │   ├── SharedChatRepository.java      # SharedChat DB 접근
+│   │   │   ├── CommentRepository.java         # Comment DB 접근
+│   │   │   └── ChatLikeRepository.java        # ChatLike DB 접근
 │   │   │
 │   │   ├── dto/
 │   │   │   ├── AuthResponse.java              # 인증 응답 DTO
 │   │   │   ├── ChatMessage.java               # 채팅 메시지 DTO
 │   │   │   ├── LoginRequest.java              # 로그인 요청 DTO
-│   │   │   └── SignUpRequest.java             # 회원가입 요청 DTO
+│   │   │   ├── SignUpRequest.java             # 회원가입 요청 DTO
+│   │   │   ├── ShareChatRequest.java          # 대화 공유 요
+│   │   │   ├── SharedChatResponse.java        # 공유 게시글 응답 DTO
+│   │   │   ├── CommentRequest.java            # 댓글 요청 DTO
+│   │   │   └── CommentResponse.java           # 댓글 응답 DTO
 │   │   │
 │   │   └── security/
-│   │       ├── SecurityConfig.java            # Spring Security 설정
-│   │       ├── JwtTokenProvider.java          # (미사용 - 레거시)
-│   │       └── JwtAuthenticationFilter.java   # (미사용 - 레거시)
+│   │       └── SecurityConfig.java            # Spring Security 설정청 DTO
 │   │
 │   └── resources/
 │       └── application.properties             # 애플리케이션 설정
@@ -355,10 +393,18 @@ t-chatbot-frontend/
 │   │   │   ├── 탭 전환 (로그인 ↔ 회원가입)
 │   │   │   └── Form 제출 → AuthContext 업데이트
 │   │   │
-│   │   └── Chat.tsx                           # 채팅 화면
-│   │       ├── 메시지 목록 렌더링
-│   │       ├── 로딩 애니메이션
-│   │       └── 메시지 전송 → Gemini AI 응답
+│   │   ├── Chat.tsx                           # 채팅 화면
+│   │   │   ├── 메시지 목록 렌더링
+│   │   │   ├── 로딩 애니메이션
+│   │   │   ├── 메시지 전송 → Gemini AI 응답
+│   │   │   └── 대화 공유 버튼 (모달)
+│   │   │
+│   │   └── Community.tsx                      # 커뮤니티 화면
+│   │       ├── 최신순/인기순 필터
+│   │       ├── 게시글 카드 (제목, 태그, 좋아요, 댓글 수)
+│   │       ├── 상세 모달 (대화 내용, 댓글)
+│   │       ├── 좋아요 토글 (빈하트 ♡ ↔ 빨간하트 ♥)
+│   │       └── 댓글 작성/삭제
 │   │
 │   ├── components/
 │   │   └── Header.tsx                         # 공통 헤더
@@ -513,6 +559,170 @@ Cookie: JSESSIONID=xxx
 
 ---
 
+### 커뮤니티 API
+
+#### 1. 대화 공유
+```http
+POST /api/community/share
+Content-Type: application/json
+Cookie: JSESSIONID=xxx
+
+{
+  "title": "오늘 있었던 일",
+  "tags": "#고민 #조언",
+  "userMessage": "오늘 너무 우울해",
+  "botResponse": "뭐 때문에 우울한데? 구체적으로 말해봐"
+}
+```
+
+**응답 (200 OK)**
+```json
+{
+  "id": 1,
+  "userId": "user@example.com",
+  "username": "사용자이름",
+  "title": "오늘 있었던 일",
+  "tags": "#고민 #조언",
+  "userMessage": "오늘 너무 우울해",
+  "botResponse": "뭐 때문에 우울한데? 구체적으로 말해봐",
+  "likes": 0,
+  "commentCount": 0,
+  "isLikedByCurrentUser": false,
+  "createdAt": "2025-01-29T10:30:00"
+}
+```
+
+---
+
+#### 2. 게시글 조회 (최신순)
+```http
+GET /api/community
+Cookie: JSESSIONID=xxx
+```
+
+**응답 (200 OK)**
+```json
+[
+  {
+    "id": 1,
+    "username": "사용자1",
+    "title": "오늘 있었던 일",
+    "tags": "#고민 #조언",
+    "likes": 5,
+    "commentCount": 3,
+    "isLikedByCurrentUser": true,
+    "createdAt": "2025-01-29T10:30:00"
+  }
+]
+```
+
+---
+
+#### 3. 게시글 조회 (인기순)
+```http
+GET /api/community/popular
+Cookie: JSESSIONID=xxx
+```
+
+**응답**: 최신순과 동일 (좋아요 많은 순으로 정렬)
+
+---
+
+#### 4. 내가 공유한 게시글 조회
+```http
+GET /api/community/my
+Cookie: JSESSIONID=xxx
+```
+
+**응답**: 최신순과 동일 (본인이 작성한 게시글만)
+
+---
+
+#### 5. 좋아요 토글
+```http
+POST /api/community/{id}/like
+Cookie: JSESSIONID=xxx
+```
+
+**응답 (200 OK)**
+```json
+{
+  "id": 1,
+  "likes": 6,
+  "isLikedByCurrentUser": true
+}
+```
+
+> **중요**: 같은 사용자가 다시 좋아요를 누르면 취소됩니다 (토글 방식)
+
+---
+
+#### 6. 댓글 작성
+```http
+POST /api/community/{id}/comments
+Content-Type: application/json
+Cookie: JSESSIONID=xxx
+
+{
+  "content": "좋은 조언이네요!"
+}
+```
+
+**응답 (200 OK)**
+```json
+{
+  "id": 1,
+  "sharedChatId": 1,
+  "userId": "user@example.com",
+  "username": "사용자이름",
+  "content": "좋은 조언이네요!",
+  "createdAt": "2025-01-29T10:35:00"
+}
+```
+
+---
+
+#### 7. 댓글 조회
+```http
+GET /api/community/{id}/comments
+```
+
+**응답 (200 OK)**
+```json
+[
+  {
+    "id": 1,
+    "username": "사용자이름",
+    "content": "좋은 조언이네요!",
+    "createdAt": "2025-01-29T10:35:00"
+  }
+]
+```
+
+---
+
+#### 8. 댓글 삭제
+```http
+DELETE /api/community/comments/{commentId}
+Cookie: JSESSIONID=xxx
+```
+
+**응답 (200 OK)**
+```json
+{
+  "message": "댓글이 삭제되었습니다."
+}
+```
+
+**에러 (403 Forbidden)**
+```json
+{
+  "message": "댓글 삭제 권한이 없습니다."
+}
+```
+
+---
+
 ## 💾 데이터베이스
 
 ### 사용 기술
@@ -534,7 +744,7 @@ CREATE TABLE users (
 );
 ```
 
-#### chat_history 테이블 (구현 예정)
+#### chat_history 테이블
 ```sql
 CREATE TABLE chat_history (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -546,6 +756,48 @@ CREATE TABLE chat_history (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 ```
+
+#### shared_chats 테이블 (커뮤니티 게시글)
+```sql
+CREATE TABLE shared_chats (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id VARCHAR(255) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    tags VARCHAR(500),
+    user_message TEXT NOT NULL,
+    bot_response TEXT NOT NULL,
+    likes INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### comments 테이블
+```sql
+CREATE TABLE comments (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    shared_chat_id BIGINT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (shared_chat_id) REFERENCES shared_chats(id)
+);
+```
+
+#### chat_likes 테이블 (좋아요 중복 방지)
+```sql
+CREATE TABLE chat_likes (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    shared_chat_id BIGINT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (shared_chat_id) REFERENCES shared_chats(id),
+    UNIQUE KEY unique_like (shared_chat_id, user_id)  -- 1인당 1좋아요
+);
+```
+
+> **핵심 기능**: `chat_likes` 테이블의 UNIQUE 제약조건으로 한 사용자가 같은 게시글에 여러 번 좋아요를 누를 수 없습니다.
 
 ### H2 Console 접속 (디버깅용)
 
@@ -589,6 +841,22 @@ CREATE TABLE chat_history (
 - **T-Talk 아바타**: 그라데이션 원형 아이콘
 - **로딩 애니메이션**: 3개의 점이 바운스
 - **스크롤 자동**: 새 메시지 시 하단으로 이동
+- **공유하기 버튼**: 대화 내용을 커뮤니티에 공유
+
+### 4. 커뮤니티 화면 (/community)
+<div align="center">
+<img src="https://via.placeholder.com/800x500?text=Community+Screen" alt="커뮤니티 화면" width="600"/>
+</div>
+
+- **필터링**: 최신순 / 인기순 (좋아요 많은 순)
+- **게시글 카드**: 제목, 태그, 좋아요 수, 댓글 수 표시
+- **좋아요 토글**:
+  - 비활성화: 빈 하트 ♡ (흰색 테두리)
+  - 활성화: 빨간 하트 ♥ (채워진 빨간색)
+  - 클릭 시 즉시 토글 (1인당 1좋아요)
+- **상세 모달**: 클릭 시 전체 대화 내용 + 댓글 표시
+- **댓글 시스템**: 작성, 조회, 삭제 (작성자만)
+- **해시태그**: #으로 시작하는 단어는 파란색으로 강조
 
 ---
 
@@ -702,33 +970,102 @@ AI 모델 응답 생성에 실패했습니다
 }
 ```
 
+### 4. 좋아요 중복 방지 (UNIQUE 제약조건)
+
+**문제:**
+```
+한 사용자가 같은 게시글에 여러 번 좋아요 가능
+```
+
+**원인:**
+- 데이터베이스에 중복 방지 로직 없음
+
+**해결:**
+```java
+// ChatLike.java - Entity 레벨에서 UNIQUE 제약조건
+@Table(name = "chat_likes", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"shared_chat_id", "user_id"})
+})
+
+// CommunityService.java - 토글 로직
+if (existingLike.isPresent()) {
+    // 이미 좋아요 누름 → 취소
+    chatLikeRepository.delete(existingLike.get());
+    sharedChat.decrementLikes();
+} else {
+    // 좋아요 추가
+    ChatLike newLike = new ChatLike(chatId, userId);
+    chatLikeRepository.save(newLike);
+    sharedChat.incrementLikes();
+}
+```
+
+### 5. 좋아요 UI 상태 동기화
+
+**문제:**
+```
+좋아요를 눌렀는지 안 눌렀는지 UI에서 구분 불가
+```
+
+**원인:**
+- 프론트엔드에 `isLikedByCurrentUser` 정보 없음
+
+**해결:**
+```java
+// SharedChatResponse.java - DTO에 필드 추가
+private Boolean isLikedByCurrentUser;
+
+// CommunityService.java - 변환 시 좋아요 여부 체크
+boolean isLiked = chatLikeRepository.existsBySharedChatIdAndUserId(
+    sharedChat.getId(), userId
+);
+response.setIsLikedByCurrentUser(isLiked);
+```
+
+```typescript
+// Community.tsx - 조건부 렌더링
+{chat.isLikedByCurrentUser ? (
+  <svg fill="red">♥</svg>  // 빨간 하트
+) : (
+  <svg fill="none" stroke="white">♡</svg>  // 빈 하트
+)}
+```
+
 ---
 
 ## 🚀 향후 계획
 
 ### Phase 1: 기능 개선
-- [ ] 대화 히스토리 저장 및 조회
-- [ ] 대화 공유 기능 (URL 생성)
+- [x] 대화 히스토리 저장 및 조회 ✅
+- [x] 대화 공유 기능 (커뮤니티) ✅
+- [x] 좋아요 및 댓글 시스템 ✅
 - [ ] 사용자 프로필 페이지
 - [ ] 비밀번호 변경 기능
+- [ ] 게시글 검색 기능
+- [ ] 북마크 기능
 
 ### Phase 2: UX 개선
 - [ ] 실시간 타이핑 효과 (스트리밍)
 - [ ] 마크다운 렌더링 (코드 블록, 링크)
 - [ ] 음성 입력 지원
 - [ ] 다크/라이트 테마 토글
+- [ ] 무한 스크롤 (페이지네이션)
+- [ ] 이미지 업로드 지원
 
 ### Phase 3: AI 고도화
 - [ ] 대화 컨텍스트 유지 (이전 대화 기억)
 - [ ] 감정 분석 및 맞춤 응답
 - [ ] MBTI 유형별 프롬프트 최적화
 - [ ] Fine-tuning (T 유형 데이터셋)
+- [ ] 다중 AI 모드 (친구형, 선배형, 멘토형)
 
 ### Phase 4: 인프라
 - [ ] PostgreSQL로 DB 변경
 - [ ] Docker 컨테이너화
 - [ ] CI/CD 파이프라인 구축
 - [ ] AWS/GCP 배포
+- [ ] Redis 캐싱 (세션 관리)
+- [ ] 로그 시스템 구축
 
 ---
 
@@ -800,7 +1137,7 @@ SOFTWARE.
 
 ## 🔗 링크
 
-- **GitHub Repository**: [gksruf22/-po-teto-mans](https://github.com/gksruf22/-po-teto-mans)
+- **GitHub Repository**: [gksruf22/-po-teto-mans](https://github.com/gksruf22/-po-teto-girls)
 - **Gemini API**: [Google AI Studio](https://ai.google.dev/)
 - **Issue 제보**: [GitHub Issues](https://github.com/gksruf22/-po-teto-mans/issues)
 
@@ -808,8 +1145,6 @@ SOFTWARE.
 
 <div align="center">
 
-### ⭐️ 이 프로젝트가 도움이 되셨다면 Star를 눌러주세요!
-
-**Made with ❤️ by 서울과학기술대학교 EC 동아리**
+**Made with by EC & TCP & NL 해커톤 || (포)테토녀들**
 
 </div>
