@@ -49,7 +49,14 @@ public class ChatController {
             // ChatService를 사용하여 AI의 응답을 받아옵니다.
             System.out.println("ChatService 호출 시작...");
             String mode = userMessage.getMode() != null ? userMessage.getMode() : "default";
-            String botResponse = chatService.getTChatResponse(userMessage.getMessage(), mode);
+            
+            // 대화 히스토리를 포함하여 응답 생성
+            String botResponse = chatService.getTChatResponse(
+                userMessage.getMessage(), 
+                mode, 
+                userMessage.getConversationHistory()
+            );
+            
             System.out.println("ChatService 응답 성공");
             return ResponseEntity.ok(new ChatMessage(botResponse));
         } catch (Exception e) {

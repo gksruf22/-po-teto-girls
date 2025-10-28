@@ -75,11 +75,23 @@ function Chat() {
     setIsLoading(true);
 
     try {
+      // 현재 대화창의 히스토리 구성 (user-bot 쌍으로)
+      const conversationHistory = [];
+      for (let i = 0; i < messages.length; i += 2) {
+        if (messages[i] && messages[i].sender === 'user' && messages[i + 1] && messages[i + 1].sender === 'bot') {
+          conversationHistory.push({
+            userMessage: messages[i].text,
+            botResponse: messages[i + 1].text
+          });
+        }
+      }
+
       const response = await axios.post(
         'http://localhost:8080/api/chat',
         { 
           message: messageText,
-          mode: selectedMode 
+          mode: selectedMode,
+          conversationHistory: conversationHistory  // 현재 대화 히스토리 전송
         },
         { withCredentials: true }
       );

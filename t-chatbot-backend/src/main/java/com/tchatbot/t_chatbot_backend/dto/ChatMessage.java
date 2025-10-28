@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,9 +14,19 @@ import lombok.Setter;
 public class ChatMessage {
     private String message;
     private String mode; // "default", "love", "tbrainwash"
+    private List<ConversationPair> conversationHistory; // 현재 대화창 히스토리
     
     public ChatMessage(String message) {
         this.message = message;
         this.mode = "default";
+    }
+    
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ConversationPair {
+        private String userMessage;
+        private String botResponse;
     }
 }
