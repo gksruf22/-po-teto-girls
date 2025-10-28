@@ -29,6 +29,7 @@ public class ChatController {
     @PostMapping("/chat")
     public ResponseEntity<?> handleChatMessage(@RequestBody ChatMessage userMessage, HttpSession session) {
         System.out.println("채팅 요청 수신: " + userMessage.getMessage());
+        System.out.println("선택된 모드: " + userMessage.getMode());
         
         // 세션에서 사용자 정보 확인
         String email = (String) session.getAttribute("email");
@@ -47,7 +48,8 @@ public class ChatController {
         try {
             // ChatService를 사용하여 AI의 응답을 받아옵니다.
             System.out.println("ChatService 호출 시작...");
-            String botResponse = chatService.getTChatResponse(userMessage.getMessage());
+            String mode = userMessage.getMode() != null ? userMessage.getMode() : "default";
+            String botResponse = chatService.getTChatResponse(userMessage.getMessage(), mode);
             System.out.println("ChatService 응답 성공");
             return ResponseEntity.ok(new ChatMessage(botResponse));
         } catch (Exception e) {

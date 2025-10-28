@@ -11,4 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessage {
     private String message;
+    private String mode; // "default", "love", "tbrainwash"
+    
+    public ChatMessage(String message) {
+        this.message = message;
+        this.mode = "default";
+    }
 }
