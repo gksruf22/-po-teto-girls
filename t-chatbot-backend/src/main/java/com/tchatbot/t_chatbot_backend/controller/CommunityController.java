@@ -1,5 +1,7 @@
 package com.tchatbot.t_chatbot_backend.controller;
 
+import com.tchatbot.t_chatbot_backend.dto.CommentRequest;
+import com.tchatbot.t_chatbot_backend.dto.CommentResponse;
 import com.tchatbot.t_chatbot_backend.dto.ShareChatRequest;
 import com.tchatbot.t_chatbot_backend.dto.SharedChatResponse;
 import com.tchatbot.t_chatbot_backend.service.CommunityService;
@@ -77,8 +79,12 @@ public class CommunityController {
      * GET /api/community
      */
     @GetMapping
-    public ResponseEntity<List<SharedChatResponse>> getAllSharedChats() {
-        List<SharedChatResponse> sharedChats = communityService.getAllSharedChats();
+    public ResponseEntity<List<SharedChatResponse>> getAllSharedChats(HttpSession session) {
+        String userId = (String) session.getAttribute("email");
+        if (userId == null) {
+            userId = "guest@example.com";
+        }
+        List<SharedChatResponse> sharedChats = communityService.getAllSharedChats(userId);
         return ResponseEntity.ok(sharedChats);
     }
     
@@ -87,8 +93,12 @@ public class CommunityController {
      * GET /api/community/popular
      */
     @GetMapping("/popular")
-    public ResponseEntity<List<SharedChatResponse>> getPopularChats() {
-        List<SharedChatResponse> popularChats = communityService.getPopularSharedChats();
+    public ResponseEntity<List<SharedChatResponse>> getPopularChats(HttpSession session) {
+        String userId = (String) session.getAttribute("email");
+        if (userId == null) {
+            userId = "guest@example.com";
+        }
+        List<SharedChatResponse> popularChats = communityService.getPopularSharedChats(userId);
         return ResponseEntity.ok(popularChats);
     }
     
@@ -115,9 +125,46 @@ public class CommunityController {
      * POST /api/community/{id}/like
      */
     @PostMapping("/{id}/like")
-    public ResponseEntity<?> likeChat(@PathVariable Long id) {
+    public ResponseEntity<?> likeChat(@PathVariable("id") Long id, HttpSession session) {
+        // 세션에서 userId 확인
+        String userId = (String) session.getAttribute("email");
+        if (userId == null) {
+            // 임시로 테스트용 유저 ID 사용 (실제로는 로그인 필요)
+            userId = "guest@example.com";
+        }
+        
         try {
-            SharedChatResponse response = communityService.likeChat(id);
+            SharedChatResponse response = communityService.likeChat(id, userId);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "좋아요 처리 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+    
+    /**
+     * 댓글 추가
+     * POST /api/community/{id}/comments
+     */
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<?> addComment(@PathVariable("id") Long id, @RequestBody CommentRequest request, HttpSession session) {
+        // 임시로 세션 없이도 댓글 추가 가능하도록 수정 (테스트용)
+        String email = (String) session.getAttribute("email");
+        String username = (String) session.getAttribute("username");
+        
+        // 세션이 없으면 임시 사용자로 설정
+        if (email == null || username == null) {
+            email = "guest@example.com";
+            username = "익명";
+        }
+        
+        try {
+            CommentResponse response = communityService.addComment(id, email, username, request.getContent());
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             Map<String, String> error = new HashMap<>();
@@ -125,7 +172,46 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
-            error.put("message", "좋아요 처리 중 오류가 발생했습니다.");
+            error.put("message", "댓글 추가 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+    
+    /**
+     * 특정 게시글의 댓글 조회
+     * GET /api/community/{id}/comments
+     */
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable("id") Long id) {
+        List<CommentResponse> comments = communityService.getComments(id);
+        return ResponseEntity.ok(comments);
+    }
+    
+    /**
+     * 댓글 삭제
+     * DELETE /api/community/comments/{commentId}
+     */
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId, HttpSession session) {
+        // 임시로 세션 없이도 삭제 가능하도록 수정 (테스트용)
+        String email = (String) session.getAttribute("email");
+        
+        if (email == null) {
+            email = "guest@example.com";  // 임시 사용자
+        }
+        
+        try {
+            communityService.deleteComment(commentId, email);
+            Map<String, String> success = new HashMap<>();
+            success.put("message", "댓글이 삭제되었습니다.");
+            return ResponseEntity.ok(success);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "댓글 삭제 중 오류가 발생했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }

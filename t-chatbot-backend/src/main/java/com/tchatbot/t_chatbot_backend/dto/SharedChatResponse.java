@@ -12,12 +12,14 @@ public class SharedChatResponse {
     private String botResponse;
     private LocalDateTime createdAt;
     private Integer likes;
+    private Long commentCount;
+    private Boolean isLikedByCurrentUser;
     
     public SharedChatResponse() {
     }
     
     public SharedChatResponse(Long id, String userId, String username, String title, String tags,
-                             String userMessage, String botResponse, LocalDateTime createdAt, Integer likes) {
+                             String userMessage, String botResponse, LocalDateTime createdAt, Integer likes, Long commentCount) {
         this.id = id;
         this.userId = userId;
         this.username = username;
@@ -27,6 +29,7 @@ public class SharedChatResponse {
         this.botResponse = botResponse;
         this.createdAt = createdAt;
         this.likes = likes;
+        this.commentCount = commentCount;
     }
     
     // Getters and Setters
@@ -100,5 +103,21 @@ public class SharedChatResponse {
     
     public void setLikes(Integer likes) {
         this.likes = likes;
+    }
+    
+    public Long getCommentCount() {
+        return commentCount;
+    }
+    
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
+    }
+    
+    public Boolean getIsLikedByCurrentUser() {
+        return isLikedByCurrentUser;
+    }
+    
+    public void setIsLikedByCurrentUser(Boolean isLikedByCurrentUser) {
+        this.isLikedByCurrentUser = isLikedByCurrentUser;
     }
 }

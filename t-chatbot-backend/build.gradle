@@ -51,3 +51,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Java 컴파일 시 파라미터 이름 보존
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << '-parameters'
+}

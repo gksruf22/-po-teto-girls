@@ -130,4 +130,10 @@ public class SharedChat {
     public void incrementLikes() {
         this.likes++;
     }
+    
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes--;
+        }
+    }
 }
