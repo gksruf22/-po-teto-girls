@@ -1,0 +1,17 @@
+  }, []);
+
+  // 초기 메시지 자동 전송 (한 번만)
+  useEffect(() => {
+    if (initialMessage && !hasProcessedInitialMessage.current) {
+      hasProcessedInitialMessage.current = true;
+      handleSendMessage(initialMessage);
+    }
+  }, [initialMessage]);
+
+  // 모드 변경 시 테마 업데이트
+  useEffect(() => {
+    document.documentElement.setAttribute('data-mode', selectedMode);
+  }, [selectedMode]);
+
+  const handleSendMessage = async (messageText: string) => {
+    if (messageText.trim() === '' || isLoading) return;

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Header.css';
+import logo from '../assets/images/logo.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -15,9 +16,7 @@ function Header() {
     <header className="header">
       <div className="header-content">
         <Link to="/" className="logo-link">
-          <div className="logo-text">
-            <span>T-Talk</span>
-          </div>
+          <img className="header-logo" src={logo} alt="logo" />
         </Link>
 
         <nav className="nav">

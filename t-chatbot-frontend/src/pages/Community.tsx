@@ -35,6 +35,11 @@ function Community() {
   const [newComment, setNewComment] = useState('');
   const [showDetailModal, setShowDetailModal] = useState(false);
 
+
+  // 커뮤니티 페이지는 기본 테마 사용
+  useEffect(() => {
+    document.documentElement.setAttribute("data-mode", "default");
+  }, []);
   useEffect(() => {
     fetchSharedChats();
   }, [filter]);
@@ -253,12 +258,6 @@ function Community() {
                     
                     <div className="chat-footer">
                       <div className="footer-actions">
-                        <span className="comment-count">
-                          <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                          </svg>
-                          {chat.commentCount || 0}
-                        </span>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -277,6 +276,13 @@ function Community() {
                           )}
                           <span className="like-count">{chat.likes}</span>
                         </button>
+                        <span className="comment-count">
+                          <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                          {chat.commentCount || 0}
+                        </span>
+                        
                       </div>
                     </div>
                   </div>

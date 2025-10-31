@@ -1,0 +1,152 @@
+/* 메인 콘텐츠 영역 */
+.main-content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content.shifted {
+  margin-left: 280px;
+}
+
+/* 사이드바 토글 버튼 */
+.sidebar-toggle {
+  position: absolute;
+  top: 5rem;
+  left: 1.5rem;
+  z-index: 40;
+  padding: 0.75rem;
+  background-color: none;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.main-content.shifted .sidebar-toggle {
+  left: calc(280px + 1.5rem);
+}
+
+.sidebar-toggle:hover {
+  opacity: 0.7;
+}
+
+.sidebar-toggle img {
+  width: 2rem;
+  height: 1.7rem;
+}
+
+/* 사이드바 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-right: none;
+  z-index: 50;
+  transform: translateX(-280px);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  padding-top: 4rem;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* 사이드바 헤더 */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 0.5px solid #ffffff;
+}
+
+.sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.sidebar-close {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.sidebar-close:hover {
+  opacity: 0.7;
+}
+
+.sidebar-close img {
+  width: 2rem;
+  height: 1.7rem;
+  display: block;
+}
+
+.sidebar-close svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #9ca3af;
+}
+
+/* 사이드바 네비게이션 */
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  color: #d1d5db;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebar-nav-item:hover {
+  background-color: #2d2d2d;
+  color: #ffffff;
+}
+
+.sidebar-nav-item svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* 반응형 - 작은 화면 */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 250px;
+    transform: translateX(-250px);
+  }
+
+  .main-content.shifted {
+    margin-left: 250px;
+  }
+
+  .main-content.shifted .sidebar-toggle {
+    left: calc(250px + 1.5rem);
+  }
+}
