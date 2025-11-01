@@ -34,6 +34,8 @@ function Community() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
 
   // 커뮤니티 페이지는 기본 테마 사용
@@ -47,9 +49,13 @@ function Community() {
   const fetchSharedChats = async () => {
     setIsLoading(true);
     try {
-      const endpoint = filter === 'popular' 
-        ? 'http://localhost:8080/api/community/popular'
-        : 'http://localhost:8080/api/community';
+      let endpoint = 'http://localhost:8080/api/community';
+      
+      if (isSearching && searchQuery.trim()) {
+        endpoint = `http://localhost:8080/api/community/search?q=${encodeURIComponent(searchQuery.trim())}`;
+      } else if (filter === 'popular') {
+        endpoint = 'http://localhost:8080/api/community/popular';
+      }
       
       const response = await axios.get(endpoint, {
         withCredentials: true
@@ -60,6 +66,39 @@ function Community() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = () => {
+    setIsSearching(true);
+    setFilter('recent'); // 검색 시 필터 초기화
+    fetchSharedChats();
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setIsSearching(false);
+    fetchSharedChats();
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchQuery(tag);
+    setIsSearching(true);
+    setFilter('recent');
+    // 검색 실행
+    setTimeout(() => {
+      const endpoint = `http://localhost:8080/api/community/search?q=${encodeURIComponent(tag)}`;
+      setIsLoading(true);
+      axios.get(endpoint, { withCredentials: true })
+        .then(response => {
+          setSharedChats(response.data);
+        })
+        .catch(error => {
+          console.error('태그 검색 오류:', error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }, 100);
   };
 
   const handleLike = async (chatId: number) => {
@@ -176,21 +215,65 @@ function Community() {
         <div className="community-header">
           <h1 className="community-title">커뮤니티</h1>
           
-          <div className="filter-buttons">
-            <button
-              onClick={() => setFilter('recent')}
-              className={`filter-button ${filter === 'recent' ? 'active' : 'inactive'}`}
-            >
-              최신순
-            </button>
-            <button
-              onClick={() => setFilter('popular')}
-              className={`filter-button ${filter === 'popular' ? 'active' : 'inactive'}`}
-            >
-              인기순
-            </button>
+          <div className="search-and-filter">
+            <div className="search-container">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                placeholder="제목, 내용, 해시태그로 검색..."
+                className="search-input"
+              />
+              {isSearching && searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className="clear-search-button"
+                  title="검색 초기화"
+                >
+                  ✕
+                </button>
+              )}
+              <button
+                onClick={handleSearch}
+                className="search-button"
+              >
+                <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="filter-buttons">
+              <button
+                onClick={() => {
+                  setFilter('recent');
+                  setIsSearching(false);
+                  setSearchQuery('');
+                }}
+                className={`filter-button ${filter === 'recent' && !isSearching ? 'active' : 'inactive'}`}
+              >
+                최신순
+              </button>
+              <button
+                onClick={() => {
+                  setFilter('popular');
+                  setIsSearching(false);
+                  setSearchQuery('');
+                }}
+                className={`filter-button ${filter === 'popular' && !isSearching ? 'active' : 'inactive'}`}
+              >
+                인기순
+              </button>
+            </div>
           </div>
         </div>
+
+        {isSearching && searchQuery && (
+          <div className="search-info">
+            <span>'{searchQuery}' 검색 결과: {sharedChats.length}개</span>
+          </div>
+        )}
 
         {isLoading && (
           <div className="loading-container">
@@ -240,7 +323,14 @@ function Community() {
                         {chat.tags.split(' ').map((word, index) => {
                           if (word.startsWith('#')) {
                             return (
-                              <span key={index} className="tag">
+                              <span 
+                                key={index} 
+                                className="tag clickable-tag"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTagClick(word);
+                                }}
+                              >
                                 {word}
                               </span>
                             );
@@ -339,7 +429,14 @@ function Community() {
                 {selectedChat.tags.split(' ').map((word, index) => {
                   if (word.startsWith('#')) {
                     return (
-                      <span key={index} className="modal-tag">
+                      <span 
+                        key={index} 
+                        className="modal-tag clickable-tag"
+                        onClick={() => {
+                          setShowDetailModal(false);
+                          handleTagClick(word);
+                        }}
+                      >
                         {word}
                       </span>
                     );

@@ -64,6 +64,25 @@ public class CommunityService {
     }
     
     /**
+     * 검색 기능 (제목, 내용, 태그로 검색)
+     */
+    public List<SharedChatResponse> searchSharedChats(String keyword, String userId) {
+        List<SharedChat> allChats = sharedChatRepository.findAllByOrderByCreatedAtDesc();
+        
+        String lowerKeyword = keyword.toLowerCase();
+        
+        return allChats.stream()
+                .filter(chat -> 
+                    chat.getTitle().toLowerCase().contains(lowerKeyword) ||
+                    chat.getUserMessage().toLowerCase().contains(lowerKeyword) ||
+                    chat.getBotResponse().toLowerCase().contains(lowerKeyword) ||
+                    (chat.getTags() != null && chat.getTags().toLowerCase().contains(lowerKeyword))
+                )
+                .map(chat -> convertToResponse(chat, userId))
+                .collect(Collectors.toList());
+    }
+    
+    /**
      * 특정 사용자의 공유 채팅 조회
      */
     public List<SharedChatResponse> getUserSharedChats(String userId) {
