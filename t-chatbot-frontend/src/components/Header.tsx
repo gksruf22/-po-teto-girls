@@ -58,7 +58,7 @@ function Header() {
                 Login
               </button>
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/login?tab=signup')}
                 className="btn-primary"
               >
                 Sign Up
