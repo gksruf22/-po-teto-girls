@@ -1,18 +1,88 @@
-# ===== FRONTEND =====
+# ================================
+# 프로젝트 전체 .gitignore
+# ================================
+
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===== IDE / Editors =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.iml
+
+# ===== Logs =====
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== Environment Variables =====
+.env
+.env.local
+.env.*.local
+
+# ===== Temporary Files =====
+tmp/
+temp/
+*.tmp
+
+# ===== Database Files =====
+data/
+*.db
+*.sqlite
+*.mv.db
+*.trace.db
+
+# ===== Backup Files =====
+*.backup
+*.bak
+
+# ===== Build Artifacts =====
+dist/
+build/
+out/
+
+# ===== Dependencies =====
+node_modules/
+package-lock.json
+
+# ===== Frontend Specific =====
 t-chatbot-frontend/node_modules/
 t-chatbot-frontend/dist/
 t-chatbot-frontend/build/
 t-chatbot-frontend/.env
+t-chatbot-frontend/.env.local
 
-# ===== BACKEND =====
-t-chatbot-backend/.idea/
+# ===== Backend Specific =====
+# Gradle
 t-chatbot-backend/.gradle/
 t-chatbot-backend/build/
+t-chatbot-backend/bin/
+t-chatbot-backend/.classpath
+t-chatbot-backend/.project
+t-chatbot-backend/.settings/
+
+# Maven (if used)
 t-chatbot-backend/target/
 
-# ===== COMMON =====
-.vscode/
-.idea/
-.DS_Store
-*.log
-/arch.xml
+# IDE specific
+t-chatbot-backend/.idea/
+t-chatbot-backend/*.iml
+
+# Spring Boot
+t-chatbot-backend/HELP.md
+
+# Database
+t-chatbot-backend/data/
+
+# ===== OS Generated =====
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/

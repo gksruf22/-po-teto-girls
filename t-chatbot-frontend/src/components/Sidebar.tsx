@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 import sidebarCloseButton from '../assets/icon/sidebarToggleButton.png';
 import './Sidebar.css';
 
@@ -33,7 +34,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
   const loadSessions = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:8080/api/sessions', {
+      const response = await axios.get(API_ENDPOINTS.CHAT_SESSIONS, {
         withCredentials: true,
       });
       setSessions(response.data);

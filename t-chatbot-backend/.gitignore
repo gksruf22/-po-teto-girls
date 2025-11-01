@@ -1,3 +1,8 @@
+# ================================
+# Spring Boot Backend .gitignore
+# ================================
+
+# Gradle
 HELP.md
 .gradle
 build/
@@ -5,7 +10,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
+# STS
 .apt_generated
 .classpath
 .factorypath
@@ -17,7 +22,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml
@@ -26,18 +31,34 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+# VS Code
 .vscode/
 
-### H2 Database Files ###
+# Database Files
 data/
 *.db
+*.mv.db
 *.trace.db
 *.lock.db
+*.backup
+
+# Environment Variables
+.env
+.env.local
+.env.production.local
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+

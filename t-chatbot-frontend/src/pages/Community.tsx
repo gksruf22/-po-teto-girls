@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 import Header from '../components/Header';
 import './Community.css';
 
@@ -49,12 +50,12 @@ function Community() {
   const fetchSharedChats = async () => {
     setIsLoading(true);
     try {
-      let endpoint = 'http://localhost:8080/api/community';
+      let endpoint = API_ENDPOINTS.COMMUNITY;
       
       if (isSearching && searchQuery.trim()) {
-        endpoint = `http://localhost:8080/api/community/search?q=${encodeURIComponent(searchQuery.trim())}`;
+        endpoint = API_ENDPOINTS.COMMUNITY_SEARCH(searchQuery.trim());
       } else if (filter === 'popular') {
-        endpoint = 'http://localhost:8080/api/community/popular';
+        endpoint = API_ENDPOINTS.COMMUNITY_POPULAR;
       }
       
       const response = await axios.get(endpoint, {
@@ -86,7 +87,7 @@ function Community() {
     setFilter('recent');
     // 검색 실행
     setTimeout(() => {
-      const endpoint = `http://localhost:8080/api/community/search?q=${encodeURIComponent(tag)}`;
+      const endpoint = API_ENDPOINTS.COMMUNITY_SEARCH(tag);
       setIsLoading(true);
       axios.get(endpoint, { withCredentials: true })
         .then(response => {
@@ -104,7 +105,7 @@ function Community() {
   const handleLike = async (chatId: number) => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/community/${chatId}/like`,
+        API_ENDPOINTS.COMMUNITY_LIKE(chatId),
         {},
         { withCredentials: true }
       );
@@ -141,7 +142,7 @@ function Community() {
   const fetchComments = async (chatId: number) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/community/${chatId}/comments`,
+        API_ENDPOINTS.COMMUNITY_COMMENTS(chatId),
         { withCredentials: true }
       );
       setComments(response.data);
@@ -158,7 +159,7 @@ function Community() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/community/${selectedChat.id}/comments`,
+        API_ENDPOINTS.COMMUNITY_COMMENTS(selectedChat.id),
         { content: newComment },
         { withCredentials: true }
       );
@@ -187,7 +188,7 @@ function Community() {
 
     try {
       await axios.delete(
-        `http://localhost:8080/api/community/comments/${commentId}`,
+        API_ENDPOINTS.COMMUNITY_COMMENT_DELETE(commentId),
         { withCredentials: true }
       );
       

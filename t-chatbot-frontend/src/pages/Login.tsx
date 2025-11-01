@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 import logo from '../assets/images/logo.png';
 import './Login.css';
 
@@ -28,7 +29,7 @@ function Login() {
 
     try {
       if (isSignUp) {
-        const response = await axios.post('http://localhost:8080/api/auth/signup', {
+        const response = await axios.post(API_ENDPOINTS.AUTH_SIGNUP, {
           email,
           password,
           username,
@@ -39,7 +40,7 @@ function Login() {
         login(response.data.username, response.data.email);
         navigate('/');
       } else {
-        const response = await axios.post('http://localhost:8080/api/auth/login', {
+        const response = await axios.post(API_ENDPOINTS.AUTH_LOGIN, {
           email,
           password,
         }, {

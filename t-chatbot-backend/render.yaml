@@ -1,0 +1,8 @@
+# Render 배포 설정
+# https://render.com 에서 사용
+
+# Build Command:
+# ./gradlew clean bootJar
+
+# Start Command:
+# java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar build/libs/*.jar

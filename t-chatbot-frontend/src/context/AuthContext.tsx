@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../config/api';
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -20,7 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 세션 확인 함수
   const checkSession = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/auth/check', {
+      const response = await axios.get(API_ENDPOINTS.AUTH_CHECK, {
         withCredentials: true  // 쿠키 전송
       });
       
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await axios.post('http://localhost:8080/api/auth/logout', {}, {
+      await axios.post(API_ENDPOINTS.AUTH_LOGOUT, {}, {
         withCredentials: true  // 쿠키 전송
       });
     } catch (error) {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { API_ENDPOINTS } from "../config/api";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import heartSendButton from "../assets/icon/heartSendButton.png";
@@ -56,7 +57,7 @@ function Chat() {
     const checkLoginStatus = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/auth/check",
+          API_ENDPOINTS.AUTH_CHECK,
           {
             withCredentials: true,
           }
@@ -126,7 +127,7 @@ function Chat() {
   const loadSessionMessages = async (sessionId: number) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/sessions/${sessionId}`,
+        API_ENDPOINTS.CHAT_SESSION_DETAIL(sessionId),
         { withCredentials: true }
       );
       
@@ -184,7 +185,7 @@ function Chat() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/api/chat",
+        API_ENDPOINTS.CHAT,
         {
           message: messageText,
           mode: selectedMode,
@@ -259,7 +260,7 @@ function Chat() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/community/share",
+        API_ENDPOINTS.COMMUNITY_SHARE,
         {
           title: shareTitle,
           tags: shareTags,
