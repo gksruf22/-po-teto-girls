@@ -1,5 +1,5 @@
 .login-container {
-  background-color: #1e1e1e;
+  background: none;
   color: white;
   min-height: 100vh;
   display: flex;
@@ -27,12 +27,6 @@
   opacity: 0.8;
 }
 
-.login-logo span {
-  font-size: 1.875rem;
-  font-weight: 500;
-  color: white;
-}
-
 .login-card {
   background-color: #282828;
   border-radius: 1rem;
@@ -41,11 +35,40 @@
   border: 1px solid #3c4043;
 }
 
-.login-title {
-  font-size: 1.5rem;
-  font-weight: normal;
-  text-align: center;
-  margin-bottom: 1.5rem;
+/* 탭 스타일 */
+.login-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #3c4043;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: color 0.2s;
+}
+
+.tab-button:hover {
+  color: #d1d5db;
+}
+
+.tab-button.active {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.tab-divider {
+  color: #3c4043;
+  font-size: 1.25rem;
 }
 
 .error-message {
@@ -110,24 +133,4 @@
 
 .submit-button:hover {
   background-color: #1d4ed8;
-}
-
-.toggle-text {
-  text-align: center;
-  color: #9ca3af;
-  font-size: 0.875rem;
-  margin-top: 1rem;
-}
-
-.toggle-button {
-  color: #60a5fa;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-decoration: underline;
-  margin-left: 0.25rem;
-}
-
-.toggle-button:hover {
-  color: #3b82f6;
 }

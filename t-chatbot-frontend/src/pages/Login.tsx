@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/images/logo.png';
 import './Login.css';
 
 function Login() {
@@ -49,13 +50,33 @@ function Login() {
     <div className="login-container">
       <div className="login-wrapper">
         <Link to="/" className="login-logo">
-          <span>T-Talk</span>
+          <img src={ logo } alt="로고"/>
         </Link>
 
         <div className="login-card">
-          <h2 className="login-title">
-            {isSignUp ? '계정 만들기' : 'T-Talk에 로그인'}
-          </h2>
+          <div className="login-tabs">
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(false);
+                setError('');
+              }}
+              className={`tab-button ${!isSignUp ? 'active' : ''}`}
+            >
+              로그인
+            </button>
+            <span className="tab-divider">|</span>
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(true);
+                setError('');
+              }}
+              className={`tab-button ${isSignUp ? 'active' : ''}`}
+            >
+              회원가입
+            </button>
+          </div>
 
           {error && (
             <div className="error-message">
@@ -67,12 +88,12 @@ function Login() {
             {isSignUp && (
               <div className="form-field">
                 <label className="form-label">
-                  사용자명
+                  이름
                 </label>
                 <input
                   type="text"
                   className="form-input-field"
-                  placeholder="닉네임을 입력하세요"
+                  placeholder="이름을 입력하세요"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -112,20 +133,6 @@ function Login() {
               {isSignUp ? '계정 만들기' : '로그인'}
             </button>
           </form>
-
-          <p className="toggle-text">
-            {isSignUp ? '이미 계정이 있으신가요?' : '계정이 없으신가요?'}
-            <button
-              type="button"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError('');
-              }}
-              className="toggle-button"
-            >
-              {isSignUp ? '로그인' : '회원가입'}
-            </button>
-          </p>
         </div>
       </div>
     </div>

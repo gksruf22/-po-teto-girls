@@ -55,13 +55,13 @@ function Header() {
                 onClick={() => navigate('/login')}
                 className="btn-secondary"
               >
-                로그인
+                Login
               </button>
               <button
                 onClick={() => navigate('/login')}
                 className="btn-primary"
               >
-                시작하기
+                Sign Up
               </button>
             </>
           )}
