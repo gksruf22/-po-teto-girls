@@ -18,15 +18,98 @@
 
 .community-header{
   margin-bottom: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .community-title {
   font-size: 2.25rem;
   font-weight: bold;
-  margin-bottom: 0;
+  margin-bottom: 1rem;
+}
+
+/* 검색 및 필터 영역 */
+.search-and-filter {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  border: 1px solid #3a3a3a;
+  border-radius: 0.5rem;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-text-primary);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.search-input::placeholder {
+  color: #6b7280;
+}
+
+.search-button {
+  position: absolute;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.search-button:hover {
+  color: #ffffff;
+}
+
+.search-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.clear-search-button {
+  position: absolute;
+  right: 3rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.clear-search-button:hover {
+  color: #ef4444;
+}
+
+.search-info {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  color: #d1d5db;
+  font-size: 0.9375rem;
 }
 
 .filter-buttons {
@@ -228,6 +311,20 @@
   font-size: 0.75rem;
   color: var(--color-accent);
   margin-right: 0.5rem;
+}
+
+.clickable-tag {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.clickable-tag:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+  background-color: rgba(139, 92, 246, 0.2);
 }
 
 .tag-text {

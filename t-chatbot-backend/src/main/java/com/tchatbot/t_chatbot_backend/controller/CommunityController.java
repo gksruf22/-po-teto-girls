@@ -103,6 +103,29 @@ public class CommunityController {
     }
     
     /**
+     * 검색 기능 (제목, 내용, 태그로 검색)
+     * GET /api/community/search?q={keyword}
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<SharedChatResponse>> searchChats(
+            @RequestParam(required = false) String q,
+            HttpSession session) {
+        String userId = (String) session.getAttribute("email");
+        if (userId == null) {
+            userId = "guest@example.com";
+        }
+        
+        if (q == null || q.trim().isEmpty()) {
+            // 검색어가 없으면 전체 목록 반환
+            List<SharedChatResponse> allChats = communityService.getAllSharedChats(userId);
+            return ResponseEntity.ok(allChats);
+        }
+        
+        List<SharedChatResponse> searchResults = communityService.searchSharedChats(q.trim(), userId);
+        return ResponseEntity.ok(searchResults);
+    }
+    
+    /**
      * 내가 공유한 채팅 조회
      * GET /api/community/my
      */
