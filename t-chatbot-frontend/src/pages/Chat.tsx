@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
@@ -16,8 +16,15 @@ interface Message {
 function Chat() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const initialMessage = location.state?.initialMessage || "";
   const initialMode = location.state?.mode || "default";
+  
+  // URL 쿼리 파라미터에서 세션 ID 가져오기 (새로고침 대응)
+  const sessionIdFromUrl = searchParams.get('session');
+  const sessionIdFromState = location.state?.sessionId || null;
+  const sessionIdFromParams = sessionIdFromUrl ? parseInt(sessionIdFromUrl) : sessionIdFromState;
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -35,6 +42,7 @@ function Chat() {
   >(initialMode);
   const [showModeDropdown, setShowModeDropdown] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<number | null>(sessionIdFromParams);
   const hasProcessedInitialMessage = useRef(false);
 
   const modeNames = {
@@ -67,13 +75,81 @@ function Chat() {
     checkLoginStatus();
   }, []);
 
-  // 초기 메시지 자동 전송 (한 번만)
+  // URL 파라미터가 변경되면 세션 ID 업데이트 및 대화 불러오기
   useEffect(() => {
-    if (initialMessage && !hasProcessedInitialMessage.current) {
+    const sessionId = sessionIdFromParams;
+    
+    if (sessionId && sessionId !== currentSessionId) {
+      // 다른 세션으로 변경
+      setCurrentSessionId(sessionId);
+      setMessages([]);
+      hasProcessedInitialMessage.current = false;
+    } else if (!sessionId && currentSessionId !== null) {
+      // 새 채팅 (세션 없음)
+      setCurrentSessionId(null);
+      setMessages([]);
+      setInput("");
+      hasProcessedInitialMessage.current = false;
+    }
+  }, [sessionIdFromParams]);
+
+  // 초기 메시지 자동 전송 (한 번만, 세션 ID가 없을 때만)
+  useEffect(() => {
+    if (initialMessage && !hasProcessedInitialMessage.current && !sessionIdFromParams) {
       hasProcessedInitialMessage.current = true;
       handleSendMessage(initialMessage);
     }
   }, [initialMessage]);
+
+  // 세션 ID가 있으면 기존 대화 불러오기
+  useEffect(() => {
+    if (currentSessionId && !hasProcessedInitialMessage.current) {
+      hasProcessedInitialMessage.current = true;
+      loadSessionMessages(currentSessionId);
+    }
+  }, [currentSessionId]);
+
+  // 세션 ID가 변경되면 URL 업데이트 (무한 루프 방지)
+  useEffect(() => {
+    const urlSessionId = searchParams.get('session');
+    const expectedUrl = currentSessionId ? currentSessionId.toString() : null;
+    
+    if (urlSessionId !== expectedUrl) {
+      if (currentSessionId) {
+        setSearchParams({ session: currentSessionId.toString() }, { replace: true });
+      } else {
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [currentSessionId]);
+
+  const loadSessionMessages = async (sessionId: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/sessions/${sessionId}`,
+        { withCredentials: true }
+      );
+      
+      const loadedMessages: Message[] = [];
+      response.data.messages.forEach((msg: any) => {
+        loadedMessages.push({
+          id: msg.id * 2 - 1,
+          text: msg.userMessage,
+          sender: "user",
+        });
+        loadedMessages.push({
+          id: msg.id * 2,
+          text: msg.botResponse,
+          sender: "bot",
+        });
+      });
+      
+      setMessages(loadedMessages);
+      setSelectedMode(response.data.mode);
+    } catch (error) {
+      console.error("세션 로드 실패:", error);
+    }
+  };
 
   // 모드 변경 시 테마 업데이트
   useEffect(() => {
@@ -112,6 +188,7 @@ function Chat() {
         {
           message: messageText,
           mode: selectedMode,
+          sessionId: currentSessionId,
           conversationHistory: conversationHistory,
         },
         { withCredentials: true }
@@ -123,6 +200,11 @@ function Chat() {
         sender: "bot",
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
+      
+      // 세션 ID 업데이트 (새 세션이 생성된 경우)
+      if (response.data.sessionId && !currentSessionId) {
+        setCurrentSessionId(response.data.sessionId);
+      }
     } catch (error: any) {
       console.error("API 통신 중 오류 발생:", error);
 

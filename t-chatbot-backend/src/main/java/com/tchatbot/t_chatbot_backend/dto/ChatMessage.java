@@ -14,6 +14,7 @@ import java.util.List;
 public class ChatMessage {
     private String message;
     private String mode; // "default", "love", "tbrainwash"
+    private Long sessionId; // 세션 ID (선택사항 - 새 대화면 null)
     private List<ConversationPair> conversationHistory; // 현재 대화창 히스토리
     
     public ChatMessage(String message) {

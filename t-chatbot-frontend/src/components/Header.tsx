@@ -12,6 +12,12 @@ function Header() {
     navigate('/');
   };
 
+  const handleNewChat = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // 쿼리 파라미터 없이 /chat으로 이동 (새 채팅)
+    navigate('/chat', { replace: false });
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -20,7 +26,7 @@ function Header() {
         </Link>
 
         <nav className="nav">
-          <Link to="/chat" className="nav-link">
+          <Link to="/chat" className="nav-link" onClick={handleNewChat}>
             채팅
           </Link>
           <Link to="/community" className="nav-link">
