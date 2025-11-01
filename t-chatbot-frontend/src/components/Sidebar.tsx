@@ -50,7 +50,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
   };
 
   const handleSessionClick = (sessionId: number) => {
-    navigate('/chat', { state: { sessionId } });
+    navigate(`/chat?session=${sessionId}`);
     onClose();
   };
 
