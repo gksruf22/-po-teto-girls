@@ -144,8 +144,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1rem;
-  background-color: #2a2a2a;
-  border: 1px solid #4a4a4a;
+  background: none;
+  border: none;
   border-radius: 0.5rem;
   color: #ffffff;
   font-size: 0.9375rem;
@@ -156,8 +156,7 @@
 }
 
 .new-chat-button:hover {
-  background-color: #3a3a3a;
-  border-color: #5a5a5a;
+  opacity: 0.7;
 }
 
 .new-chat-button svg {

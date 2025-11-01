@@ -32,11 +32,6 @@ function Header() {
           <Link to="/community" className="nav-link">
             커뮤니티
           </Link>
-          {isLoggedIn && (
-            <Link to="/history" className="nav-link">
-              히스토리
-            </Link>
-          )}
         </nav>
 
         <div className="right-section">
