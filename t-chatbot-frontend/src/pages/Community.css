@@ -214,6 +214,12 @@
   overflow: hidden;
 }
 
+.chat-author {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
 .chat-tags {
   margin-bottom: 0.75rem;
 }

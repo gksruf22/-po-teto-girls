@@ -234,7 +234,7 @@ function Community() {
 
                   <div className="chat-info">
                     <h3 className="chat-title">{chat.title}</h3>
-                    
+                    <p className="chat-author">by. {chat.username}</p>
                     {chat.tags && (
                       <div className="chat-tags">
                         {chat.tags.split(' ').map((word, index) => {
