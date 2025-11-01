@@ -25,6 +25,10 @@ public class ChatHistory {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id", nullable = true)
+    private ChatSession chatSession;
+    
     @Column(nullable = false, columnDefinition = "TEXT")
     private String userMessage;
     
